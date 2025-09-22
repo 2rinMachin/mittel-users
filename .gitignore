@@ -9,3 +9,4 @@ erl_crash.dump
 mittel_auth-*.tar
 
 *.env
+.direnv/
