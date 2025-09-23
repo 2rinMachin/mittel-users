@@ -10,13 +10,15 @@ defmodule MittelAuth.Config.Router do
     pipe_through :api
 
     scope "/users", Users.Application do
-      pipe_through [AuthPlug]
-
       get "/:id", UserController, :show
-      get "/self", UserController, :get_self
       get "/exists/:id", UserController, :exists
       put "/:id", UserController, :update
       delete "/:id", UserController, :delete
+
+      scope "/" do
+        pipe_through [AuthPlug]
+        get "/self", UserController, :get_self
+      end
     end
 
     scope "/auth", Auth.Application do
