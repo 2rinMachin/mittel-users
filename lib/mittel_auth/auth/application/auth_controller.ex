@@ -52,7 +52,11 @@ defmodule MittelAuth.Auth.Application.AuthController do
     end
   end
 
-  defp valid_password?(%User{password: hash}, password) do
+  defp valid_password?(%User{password_hash: nil}, _password) do
+    Bcrypt.no_user_verify()
+  end
+
+  defp valid_password?(%User{password_hash: hash}, password) do
     Bcrypt.verify_pass(password, hash)
   end
 
