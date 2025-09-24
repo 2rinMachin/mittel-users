@@ -6,11 +6,11 @@ config :mittel_auth,
 
 config :mittel_auth, MittelAuth.Config.Endpoint,
   url: [host: "localhost"],
-  adapter: Bandit.PhoenixAdapter
-  # render_errors: [
-  #   formats: [json: MittelAuth.Config.ErrorJSON],
-  #   layout: false
-  # ]
+  adapter: Bandit.PhoenixAdapter,
+  render_errors: [
+    formats: [json: MittelAuth.Config.ErrorJSON],
+    layout: false
+  ]
 
 alias MittelAuth.Users.Infrastructure.EctoUserRepository
 config :mittel_auth, :user_repository, EctoUserRepository

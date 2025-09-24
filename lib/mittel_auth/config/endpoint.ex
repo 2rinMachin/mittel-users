@@ -7,8 +7,8 @@ defmodule MittelAuth.Config.Endpoint do
     signing_salt: System.fetch_env!("SESSION_SIGNING_SALT"),
     encryption_salt: System.fetch_env!("SESSION_ENCRYPTION_SALT"),
     same_site: "Lax",
-    http_only: true
-    # secure: true
+    http_only: true,
+    secure: true
   ]
 
   plug Plug.RequestId
@@ -24,4 +24,14 @@ defmodule MittelAuth.Config.Endpoint do
   plug Plug.Session, @session_options
 
   plug MittelAuth.Config.Router
+end
+
+defmodule MittelAuth.Config.ErrorJSON do
+  def render("500.json", _assigns) do
+    %{error: "Internal server error"}
+  end
+
+  def render(_template, assigns) do
+    %{error: assigns[:reason] || "Unknown error"}
+  end
 end

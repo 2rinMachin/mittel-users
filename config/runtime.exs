@@ -26,3 +26,5 @@ config :mittel_auth, MittelAuth.Config.Endpoint,
     port: port
   ],
   secret_key_base: secret_key_base
+
+config :open_api_spex, :cache_adapter, OpenApiSpex.Plug.NoneCache

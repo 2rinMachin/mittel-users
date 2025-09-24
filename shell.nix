@@ -5,6 +5,7 @@ pkgs.mkShell {
   buildInputs = with pkgs; [
     beamPackages.elixir
     docker
+    docker-buildx
 
     inotify-tools
     watchman

@@ -1,9 +1,23 @@
 defmodule MittelAuth.Auth.Application.AuthController do
+  alias MittelAuth.Users.Domain.UserSchema.UserParams
   alias MittelAuth.Users.Domain.User
   use MittelAuth, :controller
+  use OpenApiSpex.ControllerSpecs
 
   @user_repo Application.compile_env!(:mittel_auth, :user_repository)
   @session_repo Application.compile_env!(:mittel_auth, :session_repository)
+
+  tags ["auth"]
+
+  operation :register,
+    summary: "Register user",
+    parameters: [
+      email: [in: :path, description: "User email", type: :string, example: "alice@example.com"],
+      password: [in: :path, description: "User password", type: :string, example: "secret123"],
+      first_name: [in: :path, description: "User first name", type: :string, example: "Alice"],
+      last_name: [in: :path, description: "User last name", type: :string, example: "Doe"]
+    ],
+    request_body: {"User params", "application/json", UserParams}
 
   def register(conn, params) do
     changeset = User.changeset(%User{}, params)
@@ -24,7 +38,10 @@ defmodule MittelAuth.Auth.Application.AuthController do
           expires_at = DateTime.add(DateTime.utc_now(), 60 * 60 * 24)
           {:ok, session} = @session_repo.create(user.id, expires_at)
 
-          json(conn, %{token: session.token, expires_at: session.expires_at})
+          conn
+          |> put_session(:session_token, session.token)
+          |> configure_session(renew: true)
+          |> json(%{expires_at: session.expires_at})
         else
           conn |> put_status(:unauthorized) |> json(%{error: "Invalid credentials"})
         end

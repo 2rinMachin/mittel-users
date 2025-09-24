@@ -3,7 +3,22 @@ defmodule MittelAuth.Config.Router do
   use MittelAuth, :router
 
   pipeline :api do
+    plug OpenApiSpex.Plug.PutApiSpec, module: MittelAuth.ApiSpec
     plug :accepts, ["json"]
+    plug :fetch_session
+  end
+
+  # scope "/" do
+  #   pipe_through :browser
+  #
+  #   get "/swagger", OpenApiSpex.Plug.SwaggerUI, path: "/openapi"
+  # end
+
+  scope "/" do
+    pipe_through :api
+
+    get "/openapi", OpenApiSpex.Plug.RenderSpec, []
+    get "/swaggerui", OpenApiSpex.Plug.SwaggerUI, path: "/openapi"
   end
 
   scope "/", MittelAuth do

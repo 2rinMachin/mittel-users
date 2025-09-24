@@ -32,7 +32,7 @@ defmodule MittelAuth.MixProject do
       {:bandit, "~> 1.5"},
       {:req, "~> 0.5"},
       # {:swoosh, "~> 1.19"},
-
+      {:open_api_spex, "~> 3.21"},
       {:jason, "~> 1.2"},
       {:bcrypt_elixir, "~> 3.0"}
     ]
