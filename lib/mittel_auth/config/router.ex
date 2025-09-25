@@ -17,8 +17,8 @@ defmodule MittelAuth.Config.Router do
   scope "/" do
     pipe_through :api
 
-    get "/openapi", OpenApiSpex.Plug.RenderSpec, []
-    get "/swaggerui", OpenApiSpex.Plug.SwaggerUI, path: "/openapi"
+    get "/openapi.json", OpenApiSpex.Plug.RenderSpec, []
+    get "/docs", OpenApiSpex.Plug.SwaggerUI, path: "/openapi.json"
   end
 
   scope "/", MittelAuth do
