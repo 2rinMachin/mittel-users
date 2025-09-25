@@ -3,6 +3,7 @@ defmodule MittelAuth.Users.Application.UserController do
   use MittelAuth, :controller
 
   @repo Application.compile_env!(:mittel_auth, :user_repository)
+  @session_repo Application.compile_env!(:mittel_auth, :session_repository)
 
   def show(conn, %{"id" => id}) do
     case @repo.find_by_id(id) do
@@ -14,7 +15,22 @@ defmodule MittelAuth.Users.Application.UserController do
     end
   end
 
-  def get_self(conn) do
+  def introspect(conn, %{"token" => token}) do
+    with {:ok, session} <- @session_repo.find_by_token(token),
+         {:ok, user} <- @repo.find_by_id(session.user_id),
+         false <- session_expired?(session) do
+      json(conn, %{
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name
+      })
+    else
+      _ -> conn |> put_status(:bad_request) |> json(%{error: "Invalid token"})
+    end
+  end
+
+  def get_self(conn, _params) do
     case conn.assigns[:current_user] do
       %User{} = user ->
         json(conn, %{
@@ -69,6 +85,13 @@ defmodule MittelAuth.Users.Application.UserController do
 
       {:error, _} ->
         conn |> put_status(:internal_server_error) |> json(%{error: "Could not delete user"})
+    end
+  end
+
+  defp session_expired?(session) do
+    case session.expires_at do
+      nil -> false
+      expires_at -> NaiveDateTime.compare(expires_at, NaiveDateTime.utc_now()) == :lt
     end
   end
 end

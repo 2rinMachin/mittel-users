@@ -23,7 +23,7 @@ defmodule MittelAuth.Auth.Plugs.AuthPlug do
   defp session_expired?(session) do
     case session.expires_at do
       nil -> false
-      expires_at -> DateTime.compare(expires_at, DateTime.utc_now()) == :lt
+      expires_at -> NaiveDateTime.compare(expires_at, NaiveDateTime.utc_now()) == :lt
     end
   end
 end

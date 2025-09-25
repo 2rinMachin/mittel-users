@@ -8,32 +8,28 @@ defmodule MittelAuth.Config.Router do
     plug :fetch_session
   end
 
-  # scope "/" do
-  #   pipe_through :browser
-  #
-  #   get "/swagger", OpenApiSpex.Plug.SwaggerUI, path: "/openapi"
-  # end
-
   scope "/" do
     pipe_through :api
 
-    get "/openapi.json", OpenApiSpex.Plug.RenderSpec, []
-    get "/docs", OpenApiSpex.Plug.SwaggerUI, path: "/openapi.json"
+    get "/openapi", OpenApiSpex.Plug.RenderSpec, []
+    get "/docs", OpenApiSpex.Plug.SwaggerUI, path: "/openapi"
   end
 
   scope "/", MittelAuth do
     pipe_through :api
 
-    scope "/users", Users.Application do
-      get "/:id", UserController, :show
-      get "/exists/:id", UserController, :exists
-      put "/:id", UserController, :update
-      delete "/:id", UserController, :delete
+    post "/introspect", Users.Application.UserController, :introspect
 
+    scope "/users", Users.Application do
       scope "/" do
         pipe_through [AuthPlug]
         get "/self", UserController, :get_self
       end
+
+      get "/exists/:id", UserController, :exists
+      get "/:id", UserController, :show
+      put "/:id", UserController, :update
+      delete "/:id", UserController, :delete
     end
 
     scope "/auth", Auth.Application do
