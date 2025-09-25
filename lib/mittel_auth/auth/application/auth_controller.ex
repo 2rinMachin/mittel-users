@@ -1,5 +1,6 @@
 defmodule MittelAuth.Auth.Application.AuthController do
   alias MittelAuth.Users.Domain.UserSchema.UserParams
+  alias MittelAuth.Config.ChangesetView
   alias MittelAuth.Users.Domain.User
   use MittelAuth, :controller
   use OpenApiSpex.ControllerSpecs
@@ -27,7 +28,9 @@ defmodule MittelAuth.Auth.Application.AuthController do
         conn |> put_status(:created) |> json(%{id: user.id, email: user.email})
 
       {:error, changeset} ->
-        conn |> put_status(:bad_request) |> json(%{errors: changeset.errors})
+        conn
+        |> put_status(:bad_request)
+        |> json(%{errors: ChangesetView.translate_errors(changeset)})
     end
   end
 
