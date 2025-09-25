@@ -8,6 +8,8 @@ defmodule MittelAuth.Application do
       MittelAuth.Config.Endpoint
     ]
 
+    MittelAuth.Release.migrate()
+
     opts = [strategy: :one_for_one, name: MittelAuth.Supervisor]
     Supervisor.start_link(children, opts)
   end
