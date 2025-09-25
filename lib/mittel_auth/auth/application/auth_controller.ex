@@ -41,10 +41,7 @@ defmodule MittelAuth.Auth.Application.AuthController do
           expires_at = DateTime.add(DateTime.utc_now(), 60 * 60 * 24)
           {:ok, session} = @session_repo.create(user.id, expires_at)
 
-          conn
-          |> put_session(:session_token, session.token)
-          |> configure_session(renew: true)
-          |> json(%{expires_at: session.expires_at})
+          conn |> json(%{token: session.token, expires_at: session.expires_at})
         else
           conn |> put_status(:unauthorized) |> json(%{error: "Invalid credentials"})
         end
