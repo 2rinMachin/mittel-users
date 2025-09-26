@@ -11,6 +11,8 @@ defmodule MittelAuth.Config.Endpoint do
     secure: true
   ]
 
+  plug CORSPlug, origin: "*"
+
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 

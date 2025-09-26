@@ -34,7 +34,8 @@ defmodule MittelAuth.MixProject do
       # {:swoosh, "~> 1.19"},
       {:open_api_spex, "~> 3.21"},
       {:jason, "~> 1.2"},
-      {:bcrypt_elixir, "~> 3.0"}
+      {:bcrypt_elixir, "~> 3.0"},
+      {:cors_plug, "~> 3.0"}
     ]
   end
 
