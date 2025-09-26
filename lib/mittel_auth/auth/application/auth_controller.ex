@@ -47,7 +47,7 @@ defmodule MittelAuth.Auth.Application.AuthController do
         end
 
       {:error, :not_found} ->
-        conn |> put_status(:not_found) |> json(%{error: "User not found"})
+        conn |> put_status(:unauthorized) |> json(%{error: "Invalid credentials"})
     end
   end
 
