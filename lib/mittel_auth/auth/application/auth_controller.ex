@@ -1,12 +1,12 @@
-defmodule MittelAuth.Auth.Application.AuthController do
-  alias MittelAuth.Users.Domain.UserSchema.UserParams
-  alias MittelAuth.Config.ChangesetView
-  alias MittelAuth.Users.Domain.User
-  use MittelAuth, :controller
+defmodule MittelUsers.Auth.Application.AuthController do
+  alias MittelUsers.Users.Domain.UserSchema.UserParams
+  alias MittelUsers.Config.ChangesetView
+  alias MittelUsers.Users.Domain.User
+  use MittelUsers, :controller
   use OpenApiSpex.ControllerSpecs
 
-  @user_repo Application.compile_env!(:mittel_auth, :user_repository)
-  @session_repo Application.compile_env!(:mittel_auth, :session_repository)
+  @user_repo Application.compile_env!(:mittel_users, :user_repository)
+  @session_repo Application.compile_env!(:mittel_users, :session_repository)
 
   tags ["auth"]
 

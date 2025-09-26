@@ -1,4 +1,4 @@
-defmodule MittelAuth.Repo.Migrations.Init do
+defmodule MittelUsers.Repo.Migrations.Init do
   use Ecto.Migration
 
   def change do

@@ -1,7 +1,7 @@
 services:
   auth:
     build: "."
-    container_name: "mittel_auth_api"
+    container_name: "mittel_users_api"
     ports:
       - "4000:4000"
     env_file:
@@ -15,7 +15,7 @@ services:
       - "db"
   db:
     image: "postgres:latest"
-    container_name: "mittel_auth_db"
+    container_name: "mittel_users_db"
     restart: "always"
     ports:
       - "5432:5432"

@@ -1,6 +1,6 @@
-defmodule MittelAuth.ApiSpec do
+defmodule MittelUsers.ApiSpec do
   alias OpenApiSpex.{Info, OpenApi, Paths, Server}
-  alias MittelAuth.Config.{Endpoint, Router}
+  alias MittelUsers.Config.{Endpoint, Router}
   @behaviour OpenApi
 
   @impl OpenApi

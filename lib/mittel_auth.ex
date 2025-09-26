@@ -1,4 +1,4 @@
-defmodule MittelAuth do
+defmodule MittelUsers do
   def router do
     quote do
       use Phoenix.Router, helpers: false

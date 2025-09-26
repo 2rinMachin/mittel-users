@@ -1,1 +1,1 @@
-call "%~dp0\mittel_auth" eval MittelAuth.Release.migrate
+call "%~dp0\mittel_users" eval MittelUsers.Release.migrate

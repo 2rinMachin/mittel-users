@@ -1,8 +1,8 @@
-defmodule MittelAuth.Sessions.Infrastructure.EctoSessionRepository do
+defmodule MittelUsers.Sessions.Infrastructure.EctoSessionRepository do
   import Ecto.Query, only: [from: 2]
 
-  alias MittelAuth.Repo
-  alias MittelAuth.Sessions.Domain.{Session, SessionRepository}
+  alias MittelUsers.Repo
+  alias MittelUsers.Sessions.Domain.{Session, SessionRepository}
   @behaviour SessionRepository
 
   @impl true

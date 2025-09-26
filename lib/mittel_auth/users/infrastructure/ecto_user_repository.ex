@@ -1,8 +1,8 @@
-defmodule MittelAuth.Users.Infrastructure.EctoUserRepository do
+defmodule MittelUsers.Users.Infrastructure.EctoUserRepository do
   import Ecto.Query, warn: false
 
-  alias MittelAuth.Repo
-  alias MittelAuth.Users.Domain.{User, UserRepository}
+  alias MittelUsers.Repo
+  alias MittelUsers.Users.Domain.{User, UserRepository}
   @behaviour UserRepository
 
   @impl true

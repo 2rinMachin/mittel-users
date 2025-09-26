@@ -1,5 +1,5 @@
-defmodule MittelAuth.Users.Domain.UserRepository do
-  alias MittelAuth.Users.Domain.User
+defmodule MittelUsers.Users.Domain.UserRepository do
+  alias MittelUsers.Users.Domain.User
 
   @callback find_by_id(id :: Ecto.UUID.t()) :: {:ok, User.t()} | {:error, :not_found}
   @callback find_by_email(email :: String.t()) :: {:ok, User.t()} | {:error, :not_found}

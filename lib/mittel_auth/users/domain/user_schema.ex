@@ -1,4 +1,4 @@
-defmodule MittelAuth.Users.Domain.UserSchema do
+defmodule MittelUsers.Users.Domain.UserSchema do
   alias OpenApiSpex.Schema
 
   defmodule User do

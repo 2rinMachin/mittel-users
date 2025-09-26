@@ -1,9 +1,9 @@
-defmodule MittelAuth.Config.Router do
-  alias MittelAuth.Auth.Plugs.AuthPlug
-  use MittelAuth, :router
+defmodule MittelUsers.Config.Router do
+  alias MittelUsers.Auth.Plugs.AuthPlug
+  use MittelUsers, :router
 
   pipeline :api do
-    plug OpenApiSpex.Plug.PutApiSpec, module: MittelAuth.ApiSpec
+    plug OpenApiSpex.Plug.PutApiSpec, module: MittelUsers.ApiSpec
     plug :accepts, ["json"]
     plug :fetch_session
   end
@@ -15,7 +15,7 @@ defmodule MittelAuth.Config.Router do
     get "/docs", OpenApiSpex.Plug.SwaggerUI, path: "/openapi"
   end
 
-  scope "/", MittelAuth do
+  scope "/", MittelUsers do
     pipe_through :api
 
     post "/introspect", Users.Application.UserController, :introspect

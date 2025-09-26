@@ -1,9 +1,9 @@
-defmodule MittelAuth.MixProject do
+defmodule MittelUsers.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :mittel_auth,
+      app: :mittel_users,
       version: "0.1.0",
       elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -15,7 +15,7 @@ defmodule MittelAuth.MixProject do
 
   def application do
     [
-      mod: {MittelAuth.Application, []},
+      mod: {MittelUsers.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

@@ -1,4 +1,4 @@
-defmodule MittelAuth.Sessions.Domain.Session do
+defmodule MittelUsers.Sessions.Domain.Session do
   use Ecto.Schema
   import Ecto.Changeset
 

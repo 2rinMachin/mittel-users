@@ -1,9 +1,9 @@
-defmodule MittelAuth.Release do
+defmodule MittelUsers.Release do
   @moduledoc """
   Used for executing DB release tasks when run in production without Mix
   installed.
   """
-  @app :mittel_auth
+  @app :mittel_users
 
   def migrate do
     load_app()

@@ -1,22 +1,22 @@
 import Config
 
-config :mittel_auth,
-  ecto_repos: [MittelAuth.Repo],
+config :mittel_users,
+  ecto_repos: [MittelUsers.Repo],
   generators: [timestamp_type: :utc_datetime]
 
-config :mittel_auth, MittelAuth.Config.Endpoint,
+config :mittel_users, MittelUsers.Config.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [json: MittelAuth.Config.ErrorJSON],
+    formats: [json: MittelUsers.Config.ErrorJSON],
     layout: false
   ]
 
-alias MittelAuth.Users.Infrastructure.EctoUserRepository
-config :mittel_auth, :user_repository, EctoUserRepository
+alias MittelUsers.Users.Infrastructure.EctoUserRepository
+config :mittel_users, :user_repository, EctoUserRepository
 
-alias MittelAuth.Sessions.Infrastructure.EctoSessionRepository
-config :mittel_auth, :session_repository, EctoSessionRepository
+alias MittelUsers.Sessions.Infrastructure.EctoSessionRepository
+config :mittel_users, :session_repository, EctoSessionRepository
 
 config :logger, :default_formatter,
   format: "$time $metadata[$level] $message\n",

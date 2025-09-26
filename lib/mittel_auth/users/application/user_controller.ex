@@ -1,9 +1,9 @@
-defmodule MittelAuth.Users.Application.UserController do
-  alias MittelAuth.Users.Domain.User
-  use MittelAuth, :controller
+defmodule MittelUsers.Users.Application.UserController do
+  alias MittelUsers.Users.Domain.User
+  use MittelUsers, :controller
 
-  @repo Application.compile_env!(:mittel_auth, :user_repository)
-  @session_repo Application.compile_env!(:mittel_auth, :session_repository)
+  @repo Application.compile_env!(:mittel_users, :user_repository)
+  @session_repo Application.compile_env!(:mittel_users, :session_repository)
 
   def show(conn, %{"id" => id}) do
     case @repo.find_by_id(id) do

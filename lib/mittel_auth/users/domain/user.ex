@@ -1,4 +1,4 @@
-defmodule MittelAuth.Users.Domain.User do
+defmodule MittelUsers.Users.Domain.User do
   use Ecto.Schema
   import Ecto.Changeset
 

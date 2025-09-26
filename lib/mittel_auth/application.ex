@@ -1,20 +1,20 @@
-defmodule MittelAuth.Application do
+defmodule MittelUsers.Application do
   @moduledoc false
   use Application
 
   def start(_type, _args) do
     children = [
-      MittelAuth.Repo,
-      MittelAuth.Config.Endpoint
+      MittelUsers.Repo,
+      MittelUsers.Config.Endpoint
     ]
 
-    MittelAuth.Release.migrate()
+    MittelUsers.Release.migrate()
 
-    opts = [strategy: :one_for_one, name: MittelAuth.Supervisor]
+    opts = [strategy: :one_for_one, name: MittelUsers.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
   def config_change(changed, _new, removed) do
-    MittelAuth.Config.Endpoint.config_change(changed, removed)
+    MittelUsers.Config.Endpoint.config_change(changed, removed)
   end
 end

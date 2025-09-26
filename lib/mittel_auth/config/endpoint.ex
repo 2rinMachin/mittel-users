@@ -1,9 +1,9 @@
-defmodule MittelAuth.Config.Endpoint do
-  use Phoenix.Endpoint, otp_app: :mittel_auth
+defmodule MittelUsers.Config.Endpoint do
+  use Phoenix.Endpoint, otp_app: :mittel_users
 
   @session_options [
     store: :cookie,
-    key: "_mittel_auth_key",
+    key: "_mittel_users_key",
     signing_salt: System.fetch_env!("SESSION_SIGNING_SALT"),
     encryption_salt: System.fetch_env!("SESSION_ENCRYPTION_SALT"),
     same_site: "Lax",
@@ -25,10 +25,10 @@ defmodule MittelAuth.Config.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
 
-  plug MittelAuth.Config.Router
+  plug MittelUsers.Config.Router
 end
 
-defmodule MittelAuth.Config.ErrorJSON do
+defmodule MittelUsers.Config.ErrorJSON do
   def render("500.json", _assigns) do
     %{error: "Internal server error"}
   end

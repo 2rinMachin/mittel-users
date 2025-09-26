@@ -1,5 +1,5 @@
-defmodule MittelAuth.Sessions.Domain.SessionRepository do
-  alias MittelAuth.Sessions.Domain.Session
+defmodule MittelUsers.Sessions.Domain.SessionRepository do
+  alias MittelUsers.Sessions.Domain.Session
 
   @callback find_by_token(token :: String.t()) :: {:ok, Session.t()} | {:error, :not_found}
   @callback create(user_id :: Ecto.UUID.t(), expires_at :: DateTime.t()) ::

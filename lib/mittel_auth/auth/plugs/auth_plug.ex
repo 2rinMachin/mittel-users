@@ -1,8 +1,8 @@
-defmodule MittelAuth.Auth.Plugs.AuthPlug do
+defmodule MittelUsers.Auth.Plugs.AuthPlug do
   import Plug.Conn
 
-  @user_repo Application.compile_env!(:mittel_auth, :user_repository)
-  @session_repo Application.compile_env!(:mittel_auth, :session_repository)
+  @user_repo Application.compile_env!(:mittel_users, :user_repository)
+  @session_repo Application.compile_env!(:mittel_users, :session_repository)
 
   def init(opts), do: opts
 
