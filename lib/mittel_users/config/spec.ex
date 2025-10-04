@@ -10,7 +10,7 @@ defmodule MittelUsers.ApiSpec do
         Server.from_endpoint(Endpoint)
       ],
       info: %Info{
-        title: "My App",
+        title: "Mittel Users",
         version: "1.0"
       },
       paths: Paths.from_router(Router)

@@ -8,8 +8,6 @@ defmodule MittelUsers.Application do
       MittelUsers.Config.Endpoint
     ]
 
-    MittelUsers.Release.migrate()
-
     opts = [strategy: :one_for_one, name: MittelUsers.Supervisor]
     Supervisor.start_link(children, opts)
   end

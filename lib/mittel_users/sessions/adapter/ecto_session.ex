@@ -1,14 +1,15 @@
-defmodule MittelUsers.Sessions.Domain.Session do
+defmodule MittelUsers.Sessions.Adapter.EctoSession do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  alias MittelUsers.Shared.Types.EctoUUID
 
+  @primary_key {:id, EctoUUID, autogenerate: true}
+  @foreign_key_type EctoUUID
   schema "sessions" do
-    field :user_id, :binary_id
+    field :user_id, EctoUUID
     field :token, :string
-    field :expires_at, :naive_datetime
+    field :expires_at, :utc_datetime
 
     timestamps(updated_at: false, type: :utc_datetime)
   end

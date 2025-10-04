@@ -1,16 +1,6 @@
 defmodule MittelUsers.Config.Endpoint do
   use Phoenix.Endpoint, otp_app: :mittel_users
 
-  @session_options [
-    store: :cookie,
-    key: "_mittel_users_key",
-    signing_salt: System.fetch_env!("SESSION_SIGNING_SALT"),
-    encryption_salt: System.fetch_env!("SESSION_ENCRYPTION_SALT"),
-    same_site: "Lax",
-    http_only: true,
-    secure: true
-  ]
-
   plug CORSPlug, origin: "*"
 
   plug Plug.RequestId
@@ -23,17 +13,28 @@ defmodule MittelUsers.Config.Endpoint do
 
   plug Plug.MethodOverride
   plug Plug.Head
-  plug Plug.Session, @session_options
 
   plug MittelUsers.Config.Router
 end
 
 defmodule MittelUsers.Config.ErrorJSON do
+  def render("404.json", %{reason: %Phoenix.Router.NoRouteError{} = reason}) do
+    %{error: "Not found", message: reason.message}
+  end
+
+  def render("404.json", _assigns) do
+    %{error: "Not found"}
+  end
+
   def render("500.json", _assigns) do
     %{error: "Internal server error"}
   end
 
-  def render(_template, assigns) do
-    %{error: assigns[:reason] || "Unknown error"}
+  def render(_template, %{reason: reason}) when is_exception(reason) do
+    %{error: "Unhandled error", message: Exception.message(reason)}
+  end
+
+  def render(_template, _assigns) do
+    %{error: "Unknown error"}
   end
 end
