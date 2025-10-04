@@ -37,7 +37,7 @@ defmodule MittelUsers.Sessions.Infrastructure.EctoSessionRepository do
   @impl true
   @spec delete(String.t()) :: :ok | {:error, any()}
   def delete(token) do
-    case Repo.get_by(Session, token: token) do
+    case Repo.get_by(EctoSession, token: token) do
       nil ->
         {:error, :not_found}
 
