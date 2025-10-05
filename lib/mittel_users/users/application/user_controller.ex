@@ -19,7 +19,7 @@ defmodule MittelUsers.Users.Application.UserController do
   end
 
   @spec introspect(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def introspect(conn, %{"token" => token}) do
+  def introspect(conn, %{"token" => "Bearer " <> token}) do
     case UserService.introspect(token) do
       {:ok, %User{} = user} ->
         json(conn, %{id: user.id, email: user.email, username: user.username})
