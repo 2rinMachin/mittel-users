@@ -15,6 +15,22 @@ defmodule MittelUsers.Users.Application.UserSchema do
   })
 end
 
+defmodule MittelUsers.Users.Application.UpdateUserSchema do
+  require OpenApiSpex
+  alias OpenApiSpex.Schema
+
+  OpenApiSpex.schema(%{
+    title: "User Update Request",
+    description: "Request body for user data update",
+    type: :object,
+    properties: %{
+      email: %Schema{type: :string, format: :email},
+      username: %Schema{type: :string}
+    },
+    required: []
+  })
+end
+
 defmodule MittelUsers.Users.Application.ExistsSchema do
   require OpenApiSpex
   alias OpenApiSpex.Schema

@@ -27,20 +27,15 @@ defmodule MittelUsers.Users.Domain.UserService do
 
   @spec update(UUID.t(), map()) :: {:ok, User.t()} | {:error, :not_found} | {:error, term()}
   def update(%UUID{} = id, params) do
-    case @user_repo.find_by_id(id) do
-      {:ok, %User{} = user} ->
-        params =
-          if Map.has_key?(params, "password") do
-            Map.put(params, "password_hash", Bcrypt.hash_pwd_salt(params["password"]))
-            |> Map.delete("password")
-          else
-            params
-          end
+    with {:ok, %User{} = user} <- @user_repo.find_by_id(id) do
+      sanitized_params =
+        params
+        |> Map.take(["email", "username"])
+        |> atomize_keys()
 
-        @user_repo.save(Map.merge(user, params))
-
-      {:error, :not_found} ->
-        {:error, :not_found}
+      @user_repo.save(Map.merge(user, sanitized_params))
+    else
+      {:error, :not_found} -> {:error, :not_found}
     end
   end
 
@@ -50,5 +45,12 @@ defmodule MittelUsers.Users.Domain.UserService do
   @spec session_expired?(UserSession.t()) :: boolean()
   defp session_expired?(session) do
     DateTime.compare(session.expires_at, DateTime.utc_now()) == :lt
+  end
+
+  @spec atomize_keys(map()) :: map()
+  defp atomize_keys(params) do
+    for {k, v} <- params, into: %{} do
+      {if(is_binary(k), do: String.to_existing_atom(k), else: k), v}
+    end
   end
 end

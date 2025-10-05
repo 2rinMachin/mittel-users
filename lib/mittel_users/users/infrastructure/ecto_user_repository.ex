@@ -51,7 +51,7 @@ defmodule MittelUsers.Users.Infrastructure.EctoUserRepository do
   @impl true
   @spec save(User.t()) :: {:ok, User.t()} | {:error, term()}
   def save(%User{} = domain_user) do
-    ecto_user = from_domain(domain_user)
+    ecto_user = Repo.get(EctoUser, domain_user.id) || from_domain(domain_user)
 
     changeset =
       EctoUser.changeset(ecto_user, %{

@@ -2,6 +2,7 @@ defmodule MittelUsers.Users.Application.UserController do
   use MittelUsers, :controller
   use OpenApiSpex.ControllerSpecs
 
+  alias MittelUsers.Users.Application.UpdateUserSchema
   alias MittelUsers.Users.Application.ExistsSchema
   alias MittelUsers.Users.Application.IntrospectTokenSchema
   alias MittelUsers.Shared.Schemas.SimpleErrorSchema
@@ -151,32 +152,42 @@ defmodule MittelUsers.Users.Application.UserController do
   end
 
   operation :update,
-    summary: "Update user info",
-    parameters: [
-      id: [in: :path, description: "User UUID", type: :string, required: true]
-    ],
-    request_body: {"User update params", "application/json", UserSchema},
+    summary: "Update current user info",
+    request_body: {"User update params", "application/json", UpdateUserSchema},
     responses: %{
       200 => {"Updated", "application/json", UserSchema},
-      400 => {"Invalid UUID", "application/json", SimpleErrorSchema},
+      400 => {"Malformed header", "application/json", SimpleErrorSchema},
+      401 => {"Unauthorized", "application/json", SimpleErrorSchema},
       404 => {"User not found", "application/json", SimpleErrorSchema}
     },
     security: [%{"bearerAuth" => []}]
 
   @spec update(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def update(conn, %{"id" => id} = params) do
-    with {:ok, uuid} <- UUID.new(id),
-         {:ok, %User{} = updated} <- UserService.update(uuid, params) do
-      json(conn, %{id: updated.id, email: updated.email, username: updated.username})
-    else
-      {:error, :invalid_uuid} ->
-        conn |> put_status(:bad_request) |> json(%{error: "Invalid UUID"})
+  def update(conn, params) do
+    case get_req_header(conn, "authorization") do
+      ["Bearer " <> token] ->
+        with {:ok, %User{id: id}} <- UserService.introspect(token),
+             {:ok, %User{} = updated} <- UserService.update(id, params) do
+          json(conn, %{id: updated.id, email: updated.email, username: updated.username})
+        else
+          {:error, :invalid_token} ->
+            conn |> put_status(:unauthorized) |> json(%{error: "Invalid token"})
 
-      {:error, :not_found} ->
-        conn |> put_status(:not_found) |> json(%{error: "User not found"})
+          {:error, :expired} ->
+            conn |> put_status(:unauthorized) |> json(%{error: "Token expired"})
 
-      {:error, reason} ->
-        conn |> put_status(:bad_request) |> json(%{error: inspect(reason)})
+          {:error, :not_found} ->
+            conn |> put_status(:not_found) |> json(%{error: "User not found"})
+
+          {:error, reason} ->
+            conn |> put_status(:internal_server_error) |> json(%{error: inspect(reason)})
+        end
+
+      [_other] ->
+        conn |> put_status(:bad_request) |> json(%{error: "Malformed header"})
+
+      [] ->
+        conn |> put_status(:unauthorized) |> json(%{error: "Client not authenticated"})
     end
   end
 
