@@ -18,7 +18,8 @@ defmodule MittelUsers.Auth.Domain.AuthService do
         id: uuid,
         email: attrs.email,
         username: attrs.username,
-        password_hash: hash
+        password_hash: hash,
+        role: :user
       }
 
       @user_repo.save(user)

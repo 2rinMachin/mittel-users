@@ -17,7 +17,7 @@ defmodule MittelUsers.ApiSpec do
       components: %Components{
         schemas: %{},
         securitySchemes: %{
-          bearerAuth: %SecurityScheme{
+          "bearerAuth" => %SecurityScheme{
             type: :http,
             scheme: :bearer,
             description: """

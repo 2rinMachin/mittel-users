@@ -39,6 +39,11 @@ defmodule MittelUsers.Users.Domain.UserService do
     end
   end
 
+  @spec promote_to_admin(UUID.t()) :: {:ok, User.t()} | {:error, :not_found}
+  def promote_to_admin(%UUID{} = id) do
+    @user_repo.update_role(id, :admin)
+  end
+
   @spec delete(UUID.t()) :: :ok | {:error, :not_found} | {:error, term()}
   def delete(%UUID{} = id), do: @user_repo.delete(id)
 

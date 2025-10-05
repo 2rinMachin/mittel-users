@@ -49,6 +49,24 @@ defmodule MittelUsers.Users.Infrastructure.EctoUserRepository do
   end
 
   @impl true
+  @spec update_role(UUID.t(), User.role()) :: {:ok, User.t()} | {:error, :not_found}
+  def update_role(%UUID{} = id, new_role) do
+    case Repo.get(EctoUser, id.value) do
+      nil ->
+        {:error, :not_found}
+
+      user ->
+        user
+        |> Ecto.Changeset.change(role: new_role)
+        |> Repo.update()
+        |> case do
+          {:ok, updated} -> {:ok, to_domain(updated)}
+          {:error, changeset} -> {:error, changeset}
+        end
+    end
+  end
+
+  @impl true
   @spec save(User.t()) :: {:ok, User.t()} | {:error, term()}
   def save(%User{} = domain_user) do
     ecto_user = Repo.get(EctoUser, domain_user.id) || from_domain(domain_user)
@@ -94,6 +112,7 @@ defmodule MittelUsers.Users.Infrastructure.EctoUserRepository do
       email: ecto_user.email,
       username: ecto_user.username,
       password_hash: ecto_user.password_hash,
+      role: ecto_user.role,
       inserted_at: ecto_user.inserted_at,
       updated_at: ecto_user.updated_at
     }

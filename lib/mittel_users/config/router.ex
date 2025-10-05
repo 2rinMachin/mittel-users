@@ -31,6 +31,7 @@ defmodule MittelUsers.Config.Router do
       get "/by_username/:username", UserController, :find_by_username
 
       get "/:id", UserController, :show
+      patch "/:id/promote", UserController, :promote
     end
 
     scope "/auth", Auth.Application do

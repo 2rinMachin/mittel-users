@@ -26,7 +26,7 @@ defmodule MittelUsers.Users.Application.UserController do
   def show(conn, %{"id" => id}) do
     with {:ok, uuid} <- UUID.new(id),
          {:ok, %User{} = user} <- UserService.get_user(uuid) do
-      json(conn, %{id: user.id, email: user.email, username: user.username})
+      json(conn, %{id: user.id, email: user.email, username: user.username, role: user.role})
     else
       {:error, :invalid_uuid} ->
         conn |> put_status(:bad_request) |> json(%{error: "Invalid UUID"})
@@ -51,7 +51,7 @@ defmodule MittelUsers.Users.Application.UserController do
       {:ok, token} ->
         case UserService.introspect(token) do
           {:ok, user} ->
-            json(conn, %{id: user.id, email: user.email, username: user.username})
+            json(conn, %{id: user.id, email: user.email, username: user.username, role: user.role})
 
           {:error, :expired} ->
             conn |> put_status(:unauthorized) |> json(%{error: "Token expired"})
@@ -82,7 +82,7 @@ defmodule MittelUsers.Users.Application.UserController do
       ["Bearer " <> token] ->
         case UserService.introspect(token) do
           {:ok, %User{} = user} ->
-            json(conn, %{id: user.id, email: user.email, username: user.username})
+            json(conn, %{id: user.id, email: user.email, username: user.username, role: user.role})
 
           {:error, :invalid_token} ->
             conn
@@ -119,7 +119,8 @@ defmodule MittelUsers.Users.Application.UserController do
         json(conn, %{
           id: user.id,
           email: user.email,
-          username: user.username
+          username: user.username,
+          role: user.role
         })
 
       {:error, :not_found} ->
@@ -168,7 +169,12 @@ defmodule MittelUsers.Users.Application.UserController do
       ["Bearer " <> token] ->
         with {:ok, %User{id: id}} <- UserService.introspect(token),
              {:ok, %User{} = updated} <- UserService.update(id, params) do
-          json(conn, %{id: updated.id, email: updated.email, username: updated.username})
+          json(conn, %{
+            id: updated.id,
+            email: updated.email,
+            username: updated.username,
+            role: updated.role
+          })
         else
           {:error, :invalid_token} ->
             conn |> put_status(:unauthorized) |> json(%{error: "Invalid token"})
@@ -181,6 +187,55 @@ defmodule MittelUsers.Users.Application.UserController do
 
           {:error, reason} ->
             conn |> put_status(:internal_server_error) |> json(%{error: inspect(reason)})
+        end
+
+      [_other] ->
+        conn |> put_status(:bad_request) |> json(%{error: "Malformed header"})
+
+      [] ->
+        conn |> put_status(:unauthorized) |> json(%{error: "Client not authenticated"})
+    end
+  end
+
+  operation :promote,
+    summary: "Promote existing user to admin",
+    parameters: [
+      id: [in: :path, description: "User UUID", type: :string, required: true]
+    ],
+    responses: %{
+      200 => {"User promoted", "application/json", UserSchema},
+      400 => {"Bad request", "application/json", SimpleErrorSchema},
+      401 => {"Unauthorized", "application/json", SimpleErrorSchema},
+      403 => {"Forbidden", "application/json", SimpleErrorSchema},
+      404 => {"User not found", "application/json", SimpleErrorSchema}
+    },
+    security: [%{"bearerAuth" => []}]
+
+  @spec promote(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def promote(conn, %{"id" => id}) do
+    case get_req_header(conn, "authorization") do
+      ["Bearer " <> token] ->
+        with {:ok, user} <- UserService.introspect(token),
+             :ok <- ensure_admin(user),
+             {:ok, updated} <- UserService.promote_to_admin(%UUID{value: id}) do
+          json(conn, %{
+            id: updated.id,
+            email: updated.email,
+            username: updated.username,
+            role: updated.role
+          })
+        else
+          {:error, :not_admin} ->
+            conn |> put_status(:forbidden) |> json(%{error: "Endpoint only allowed for admins"})
+
+          {:error, :not_found} ->
+            conn |> put_status(:not_found) |> json(%{error: "User to promote not found"})
+
+          {:error, :invalid_token} ->
+            conn |> put_status(:unauthorized) |> json(%{error: "Invalid token"})
+
+          {:error, :expired} ->
+            conn |> put_status(:unauthorized) |> json(%{error: "Token expired"})
         end
 
       [_other] ->
@@ -229,6 +284,10 @@ defmodule MittelUsers.Users.Application.UserController do
         conn |> put_status(:unauthorized) |> json(%{error: "Client not authenticated"})
     end
   end
+
+  @spec ensure_admin(User.t()) :: :ok | {:error, :not_admin}
+  defp ensure_admin(%{role: :admin}), do: :ok
+  defp ensure_admin(_), do: {:error, :not_admin}
 
   @spec extract_token(map()) :: {:ok, String.t()} | {:error, :malformed} | {:error, :missing}
   defp extract_token(%{"token" => "Bearer " <> token}), do: {:ok, token}

@@ -9,7 +9,8 @@ defmodule MittelUsers.Users.Application.UserSchema do
     properties: %{
       id: %Schema{type: :string, format: :uuid},
       email: %Schema{type: :string, format: :email},
-      username: %Schema{type: :string}
+      username: %Schema{type: :string},
+      role: %Schema{type: :string, enum: ["user", "admin"]}
     },
     required: [:id, :email, :username]
   })

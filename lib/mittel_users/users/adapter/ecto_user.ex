@@ -10,15 +10,18 @@ defmodule MittelUsers.Users.Adapter.EctoUser do
     field :username, :string
     field :password_hash, :string
     field :password, :string, virtual: true
+    field :role, Ecto.Enum, values: [:user, :admin], default: :user
 
     timestamps(type: :utc_datetime)
   end
 
+  @type role :: :user | :admin
   @type t :: %__MODULE__{
           id: Ecto.UUID.t(),
           email: String.t(),
           username: String.t(),
           password_hash: String.t() | nil,
+          role: role(),
           inserted_at: DateTime.t() | nil,
           updated_at: DateTime.t() | nil
         }

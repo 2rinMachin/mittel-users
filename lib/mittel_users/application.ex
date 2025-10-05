@@ -9,7 +9,10 @@ defmodule MittelUsers.Application do
     ]
 
     opts = [strategy: :one_for_one, name: MittelUsers.Supervisor]
-    Supervisor.start_link(children, opts)
+    {:ok, pid} = Supervisor.start_link(children, opts)
+
+    MittelUsers.Seeds.ensure_admin_user()
+    {:ok, pid}
   end
 
   def config_change(changed, _new, removed) do

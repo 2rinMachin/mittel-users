@@ -35,7 +35,7 @@ defmodule MittelUsers.Auth.Application.AuthController do
       {:ok, user} ->
         conn
         |> put_status(:created)
-        |> json(%{id: user.id, email: user.email, username: user.username})
+        |> json(%{id: user.id, email: user.email, username: user.username, role: user.role})
 
       {:error, %Ecto.Changeset{} = changeset} ->
         errors = render_errors(changeset)
