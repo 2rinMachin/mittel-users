@@ -28,8 +28,19 @@ defmodule MittelUsers.Users.Domain.UserService do
   @spec update(UUID.t(), map()) :: {:ok, User.t()} | {:error, :not_found} | {:error, term()}
   def update(%UUID{} = id, params) do
     case @user_repo.find_by_id(id) do
-      {:ok, %User{} = user} -> @user_repo.save(Map.merge(user, params))
-      {:error, :not_found} -> {:error, :not_found}
+      {:ok, %User{} = user} ->
+        params =
+          if Map.has_key?(params, "password") do
+            Map.put(params, "password_hash", Bcrypt.hash_pwd_salt(params["password"]))
+            |> Map.delete("password")
+          else
+            params
+          end
+
+        @user_repo.save(Map.merge(user, params))
+
+      {:error, :not_found} ->
+        {:error, :not_found}
     end
   end
 
