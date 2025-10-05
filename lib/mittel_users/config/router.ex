@@ -24,12 +24,13 @@ defmodule MittelUsers.Config.Router do
 
     scope "/users", Users.Application do
       get "/self", UserController, :get_self
+      delete "/self", UserController, :delete
+
       get "/exists/:id", UserController, :exists
       get "/by_username/:username", UserController, :find_by_username
 
       get "/:id", UserController, :show
       put "/:id", UserController, :update
-      delete "/:id", UserController, :delete
     end
 
     scope "/auth", Auth.Application do
