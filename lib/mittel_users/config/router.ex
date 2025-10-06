@@ -23,7 +23,7 @@ defmodule MittelUsers.Config.Router do
     post "/introspect", Users.Application.UserController, :introspect
 
     scope "/users", Users.Application do
-      get "/all/:pattern", UserController, :get_all_by_pattern
+      get "/all", UserController, :get_all_by_pattern
 
       get "/self", UserController, :get_self
       put "/self", UserController, :update

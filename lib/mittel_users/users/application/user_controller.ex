@@ -302,6 +302,9 @@ defmodule MittelUsers.Users.Application.UserController do
     )
   end
 
+  def get_all_by_pattern(conn, _params),
+    do: conn |> put_status(:bad_request) |> json(%{error: "Missing parameter `pattern`"})
+
   @spec ensure_admin(User.t()) :: :ok | {:error, :not_admin}
   defp ensure_admin(%{role: :admin}), do: :ok
   defp ensure_admin(_), do: {:error, :not_admin}
