@@ -39,9 +39,9 @@ defmodule MittelUsers.Users.Domain.UserService do
     end
   end
 
-  @spec search_by_pattern(String.t()) :: [User.t()]
-  def search_by_pattern(partial) when is_binary(partial) do
-    @user_repo.find_by_username_like(partial)
+  @spec search_by_pattern(String.t(), non_neg_integer(), non_neg_integer()) :: [User.t()]
+  def search_by_pattern(partial, page \\ 1, page_size \\ 20) when is_binary(partial) do
+    @user_repo.find_by_username_like(partial, page, page_size)
   end
 
   @spec promote_to_admin(UUID.t()) :: {:ok, User.t()} | {:error, :not_found}

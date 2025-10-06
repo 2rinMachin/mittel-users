@@ -68,8 +68,15 @@ defmodule MittelUsers.Users.Application.GetByPatternSchema do
   alias OpenApiSpex.Schema
 
   OpenApiSpex.schema(%{
-    title: "User List",
-    type: :array,
-    items: UserSchema
+    title: "User Page",
+    type: :object,
+    properties: %{
+      page: %Schema{type: :integer},
+      page_size: %Schema{type: :integer},
+      results: %Schema{
+        type: :array,
+        items: UserSchema
+      }
+    }
   })
 end

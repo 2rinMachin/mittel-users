@@ -36,11 +36,17 @@ defmodule MittelUsers.Users.Infrastructure.EctoUserRepository do
   end
 
   @impl true
-  @spec find_by_username_like(String.t()) :: [User.t()]
-  def find_by_username_like(partial) do
+  @spec find_by_username_like(String.t(), non_neg_integer(), non_neg_integer()) :: [User.t()]
+  def find_by_username_like(partial, page, page_size) do
     pattern = "%#{partial}%"
+    offset = (page - 1) * page_size
 
-    EctoUser |> where([u], ilike(u.username, ^pattern)) |> Repo.all() |> Enum.map(&to_domain/1)
+    EctoUser
+    |> where([u], ilike(u.username, ^pattern))
+    |> limit(^page_size)
+    |> offset(^offset)
+    |> Repo.all()
+    |> Enum.map(&to_domain/1)
   end
 
   @impl true

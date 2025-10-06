@@ -292,24 +292,33 @@ defmodule MittelUsers.Users.Application.UserController do
       pattern: [in: :path, description: "Search Pattern", type: :string, required: true]
     ],
     responses: %{
-      200 => {"List of matching users", "application/json", GetByPatternSchema},
+      200 => {"Page of matching users", "application/json", GetByPatternSchema},
       400 => {"Invalid input", "application/json", SimpleErrorSchema}
     }
 
   @spec get_all_by_pattern(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def get_all_by_pattern(conn, %{"pattern" => partial}) do
-    users = UserService.search_by_pattern(partial)
+  def get_all_by_pattern(conn, %{"pattern" => partial} = params) do
+    page = Map.get(params, "page", "1") |> String.to_integer()
+    page_size = Map.get(params, "page_size", "20") |> String.to_integer()
+
+    users = UserService.search_by_pattern(partial, page, page_size)
 
     json(
       conn,
-      Enum.map(users, fn user ->
-        %{
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          role: user.role
-        }
-      end)
+      %{
+        page: page,
+        page_size: page_size,
+        results:
+          Enum.map(
+            users,
+            &%{
+              id: &1.id,
+              username: &1.username,
+              email: &1.email,
+              role: &1.role
+            }
+          )
+      }
     )
   end
 
