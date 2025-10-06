@@ -61,3 +61,15 @@ defmodule MittelUsers.Users.Application.IntrospectTokenSchema do
     required: [:token]
   })
 end
+
+defmodule MittelUsers.Users.Application.GetByPatternSchema do
+  require OpenApiSpex
+  alias MittelUsers.Users.Application.UserSchema
+  alias OpenApiSpex.Schema
+
+  OpenApiSpex.schema(%{
+    title: "User List",
+    type: :array,
+    items: UserSchema
+  })
+end

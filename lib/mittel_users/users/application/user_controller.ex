@@ -2,6 +2,7 @@ defmodule MittelUsers.Users.Application.UserController do
   use MittelUsers, :controller
   use OpenApiSpex.ControllerSpecs
 
+  alias MittelUsers.Users.Application.GetByPatternSchema
   alias MittelUsers.Users.Application.UpdateUserSchema
   alias MittelUsers.Users.Application.ExistsSchema
   alias MittelUsers.Users.Application.IntrospectTokenSchema
@@ -284,6 +285,16 @@ defmodule MittelUsers.Users.Application.UserController do
         conn |> put_status(:unauthorized) |> json(%{error: "Client not authenticated"})
     end
   end
+
+  operation :get_all_by_pattern,
+    summary: "Search users by partial match",
+    parameters: [
+      pattern: [in: :path, description: "Search Pattern", type: :string, required: true]
+    ],
+    responses: %{
+      200 => {"List of matching users", "application/json", GetByPatternSchema},
+      400 => {"Invalid input", "application/json", SimpleErrorSchema}
+    }
 
   @spec get_all_by_pattern(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def get_all_by_pattern(conn, %{"pattern" => partial}) do
