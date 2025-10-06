@@ -39,6 +39,11 @@ defmodule MittelUsers.Users.Domain.UserService do
     end
   end
 
+  @spec search_by_pattern(String.t()) :: [User.t()]
+  def search_by_pattern(partial) when is_binary(partial) do
+    @user_repo.find_by_username_like(partial)
+  end
+
   @spec promote_to_admin(UUID.t()) :: {:ok, User.t()} | {:error, :not_found}
   def promote_to_admin(%UUID{} = id) do
     @user_repo.update_role(id, :admin)

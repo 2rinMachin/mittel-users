@@ -36,6 +36,14 @@ defmodule MittelUsers.Users.Infrastructure.EctoUserRepository do
   end
 
   @impl true
+  @spec find_by_username_like(String.t()) :: [User.t()]
+  def find_by_username_like(partial) do
+    pattern = "%#{partial}%"
+
+    EctoUser |> where([u], ilike(u.username, ^pattern)) |> Repo.all() |> Enum.map(&to_domain/1)
+  end
+
+  @impl true
   @spec exists_by_id(UUID.t()) :: {:ok, boolean()} | {:error, term()}
   def exists_by_id(%UUID{value: value}) do
     query = from u in EctoUser, where: u.id == ^value, select: 1

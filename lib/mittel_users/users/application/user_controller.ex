@@ -285,6 +285,23 @@ defmodule MittelUsers.Users.Application.UserController do
     end
   end
 
+  @spec get_all_by_pattern(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def get_all_by_pattern(conn, %{"pattern" => partial}) do
+    users = UserService.search_by_pattern(partial)
+
+    json(
+      conn,
+      Enum.map(users, fn user ->
+        %{
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          role: user.role
+        }
+      end)
+    )
+  end
+
   @spec ensure_admin(User.t()) :: :ok | {:error, :not_admin}
   defp ensure_admin(%{role: :admin}), do: :ok
   defp ensure_admin(_), do: {:error, :not_admin}
